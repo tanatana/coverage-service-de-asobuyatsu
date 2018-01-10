@@ -15,10 +15,13 @@ install:
 
 before_script:
   - echo "install"
+  - echo -n "" > coverage.txt
 
 script:
-  - go test
-  - go test ./add
+  - go test -race -coverprofile=main.out -covermode=atomic
+  - go test ./add -race -coverprofile=add.out -covermode=atomic
 
 after_success:
-  - echo "success"
+  - cat main.out >> coverage.txt
+  - cat add.out >> coverage.txt
+  - bash <(curl -s https://codecov.io/bash)
