@@ -8,20 +8,21 @@ branches:
     - develop
 
 before_install:
-  - echo "before_install"
+  - go get github.com/mattn/goveralls
 
 install:
   - echo "install"
-
-before_script:
-  - echo "install"
-  - echo -n "" > coverage.txt
 
 script:
   - go test -race -coverprofile=main.out -covermode=atomic
   - go test ./add -race -coverprofile=add.out -covermode=atomic
 
 after_success:
+  - echo -n "" > coverage.txt
   - cat main.out >> coverage.txt
   - cat add.out >> coverage.txt
   - bash <(curl -s https://codecov.io/bash)
+  - echo "mode: atomic" > coveralls.out
+  - cat main.out | tail -n +2 >> coveralls.out
+  - cat add.out | tail -n +2 >> coveralls.out
+  - $HOME/gopath/bin/goveralls  -coverprofile=coveralls.out -service=travis-ci -repotoken $COVERALLS_TOKEN
