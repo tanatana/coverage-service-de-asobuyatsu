@@ -22,7 +22,9 @@ after_success:
   - cat main.out >> coverage.txt
   - cat add.out >> coverage.txt
   - bash <(curl -s https://codecov.io/bash)
-  - echo "mode: atomic" > coveralls.out
-  - cat main.out | tail -n +2 >> coveralls.out
+
+  - echo -n "" > coveralls.out
+  - cat main.out >> coveralls.out
   - cat add.out | tail -n +2 >> coveralls.out
+  - cat coveralls.out
   - $HOME/gopath/bin/goveralls  -coverprofile=coveralls.out -service=travis-ci -repotoken $COVERALLS_TOKEN
